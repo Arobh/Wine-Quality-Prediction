@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wine Quality Prediction</title>
+    <style>
+        body {
+            text-align: center; /* Align everything center */
+            background-image: url('https://cdn.glitch.global/8cf6ae80-54a1-48f5-895a-7abb906c84d0/wine.jpg?v=1719368608529'); /* Specify the path to your wine background image */
+            background-size: cover; /* Cover the entire background */
+            background-position: center; /* Center the background image */
+            color: #ffffff; /* White text color */
+            font-family: Arial, sans-serif; /* Font family */
+            font-size: 16px; /* Base font size */
+        }
+        form {
+            display: inline-block; /* Ensure form elements are in a single line */
+            text-align: left; /* Align text in form to the left */
+            margin: 0 auto; /* Center the form horizontally */
+            background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent black background for form */
+            padding: 20px; /* Padding for the form */
+            border-radius: 10px; /* Rounded corners for the form */
+        }
+        label {
+            display: inline-block;
+            width: 200px; /* Width of labels */
+            text-align: right;
+            margin-right: 10px;
+        }
+        input {
+            margin-bottom: 10px;
+            padding: 5px; /* Padding for input fields */
+            width: 150px; /* Width of input fields */
+            border-radius: 5px; /* Rounded corners for input fields */
+            border: 1px solid #ccc; /* Border color */
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 20px; /* Padding for the button */
+            border-radius: 5px; /* Rounded corners for the button */
+            border: none; /* No border */
+            background-color: #4CAF50; /* Green background color */
+            color: white; /* White text color */
+            font-size: 16px; /* Font size */
+            cursor: pointer; /* Cursor style */
+        }
+        #predict_button {
+            display: block;
+            margin: 20px auto; /* Center the button */
+        }
+        #result {
+            margin-top: 20px; /* Margin for the prediction result */
+            font-weight: bold; /* Bold text for prediction result */
+            background-color: rgba(0, 0, 0, 0.9); /* Semi-transparent black background */
+            padding: 10px; /* Padding for the result */
+            border-radius: 5px; /* Rounded corners */
+            max-width: 400px; /* Maximum width for result box */
+            margin: 0 auto; /* Center the result box horizontally */
+            color: #ffffff; /* White text color */
+        }
+    </style>
+    <script>
+        async function predictQuality() {
+            const formData = {
+                'fixed acidity': parseFloat(document.getElementById('fixed_acidity').value),
+                'volatile acidity': parseFloat(document.getElementById('volatile_acidity').value),
+                'citric acid': parseFloat(document.getElementById('citric_acid').value),
+                'residual sugar': parseFloat(document.getElementById('residual_sugar').value),
+                'chlorides': parseFloat(document.getElementById('chlorides').value),
+                'free sulfur dioxide': parseFloat(document.getElementById('free_sulfur_dioxide').value),
+                'total sulfur dioxide': parseFloat(document.getElementById('total_sulfur_dioxide').value),
+                'density': parseFloat(document.getElementById('density').value),
+                'pH': parseFloat(document.getElementById('pH').value),
+                'sulphates': parseFloat(document.getElementById('sulphates').value),
+                'alcohol': parseFloat(document.getElementById('alcohol').value)
+            };
+
+            const response = await fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const result = await response.json();
+            document.getElementById('result').innerText = 'Predicted Quality: ' + result.quality.toFixed(2); // Limiting decimal places to 2
+        }
+    </script>
+</head>
+<body >
+    <h1 style="background-color: rgba(0, 0, 0, 0.8); ">Wine Quality Prediction</h1>
+    <form onsubmit="event.preventDefault(); predictQuality();">
+        <label for="fixed_acidity">Fixed Acidity (0 to 15 g/dm³):</label>
+        <input type="number" id="fixed_acidity" step="any" min="0" max="15" required>
+        
+        <label for="volatile_acidity">Volatile Acidity (0 to 2 g/dm³):</label>
+        <input type="number" id="volatile_acidity" step="any" min="0" max="2" required><br>
+        
+        <label for="citric_acid">Citric Acid (0 to 1 g/dm³):</label>
+        <input type="number" id="citric_acid" step="any" min="0" max="1" required>
+        
+        <label for="residual_sugar">Residual Sugar (0 to 50 g/dm³):</label>
+        <input type="number" id="residual_sugar" step="any" min="0" max="50" required><br>
+        
+        <label for="chlorides">Chlorides (0 to 1 g/dm³):</label>
+        <input type="number" id="chlorides" step="any" min="0" max="1" required>
+        
+        <label for="free_sulfur_dioxide">Free Sulfur Dioxide (0 to 100 mg/dm³):</label>
+        <input type="number" id="free_sulfur_dioxide" step="any" min="0" max="100" required><br>
+        
+        <label for="total_sulfur_dioxide">Total Sulfur Dioxide (0 to 300 mg/dm³):</label>
+        <input type="number" id="total_sulfur_dioxide" step="any" min="0" max="300" required>
+        
+        <label for="density">Density (0.990 to 1.050 g/cm³):</label>
+        <input type="number" id="density" step="any" min="0.990" max="1.050" required><br>
+        
+        <label for="pH">pH (2.5 to 4.5):</label>
+        <input type="number" id="pH" step="any" min="2.5" max="4.5" required>
+        
+        <label for="sulphates">Sulphates (0 to 2 g/dm³):</label>
+        <input type="number" id="sulphates" step="any" min="0" max="2" required><br>
+        
+        <label for="alcohol">Alcohol (8% to 15% vol):</label>
+        <input type="number" id="alcohol" step="any" min="8" max="15" required><br>
+        
+        <button id="predict_button" type="submit">Predict Quality</button>
+    </form>
+    <p id="result"></p>
+</body>
+</html>
